@@ -1,0 +1,37 @@
+{
+  "name": "canteen-management-system",
+  "version": "1.0.0",
+  "description": "A comprehensive digital solution for college canteen pre-order and management using MERN stack",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd backend && npm run dev",
+    "client": "cd frontend && npm start",
+    "build": "cd frontend && npm run build",
+    "install-deps": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "start": "cd backend && npm start"
+  },
+  "keywords": [
+    "canteen",
+    "food-ordering",
+    "management-system",
+    "mern-stack",
+    "react",
+    "nodejs",
+    "mongodb",
+    "express"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/canteen-management-system.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/canteen-management-system/issues"
+  },
+  "homepage": "https://github.com/yourusername/canteen-management-system#readme"
+}
