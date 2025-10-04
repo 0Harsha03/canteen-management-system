@@ -1,16 +1,24 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const mongoose = require('mongoose');
+const connectDB = require('./config/database');
 
 // Load environment variables
 dotenv.config();
+
+// Connect to database
+connectDB();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://your-frontend-domain.vercel.app'] 
+    : ['http://localhost:3000', 'http://localhost:3001'],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -29,24 +37,27 @@ app.get('/', (req, res) => {
   });
 });
 
-// API routes (to be added)
-// app.use('/api/auth', require('./routes/auth'));
+// API routes
+app.use('/api/auth', require('./routes/auth'));
 // app.use('/api/users', require('./routes/users'));
-// app.use('/api/menu', require('./routes/menu'));
-// app.use('/api/orders', require('./routes/orders'));
+app.use('/api/menu', require('./routes/menu'));
+app.use('/api/orders', require('./routes/orders'));
+
+// 404 handler - must come BEFORE error handling middleware
+app.use((req, res, next) => {
+  const error = new Error(`Cannot find ${req.originalUrl} on this server!`);
+  error.status = 404;
+  next(error);
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ 
-    message: 'Something went wrong!',
-    error: process.env.NODE_ENV === 'development' ? err.message : {}
+  res.status(err.status || 500).json({ 
+    success: false,
+    message: err.message || 'Something went wrong!',
+    error: process.env.NODE_ENV === 'development' ? err.stack : {}
   });
-});
-
-// 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({ message: 'Route not found' });
 });
 
 // Start server
