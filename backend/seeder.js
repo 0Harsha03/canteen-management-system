@@ -315,11 +315,8 @@ const importData = async () => {
     let createdUsers = [];
     
     for (const userData of users) {
-      const hashedPassword = await bcrypt.hash(userData.password, 12);
-      const user = await User.create({
-        ...userData,
-        password: hashedPassword
-      });
+      // Don't hash password here - let User model pre-save middleware handle it
+      const user = await User.create(userData);
       createdUsers.push(user);
       console.log(`   ✅ ${user.name} (${user.role})`);
     }

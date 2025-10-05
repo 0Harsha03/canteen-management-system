@@ -5,11 +5,17 @@
   "main": "index.js",
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "dev-react": "concurrently \"npm run server\" \"npm run client-react\"",
     "server": "cd backend && npm run dev",
     "client": "cd frontend && npm start",
+    "client-react": "cd frontend-react && npm run dev",
     "build": "cd frontend && npm run build",
-    "install-deps": "npm install && cd backend && npm install && cd ../frontend && npm install",
-    "start": "cd backend && npm start"
+    "build-react": "cd frontend-react && npm run build",
+    "install-deps": "npm install && cd backend && npm install && cd ../frontend && npm install && cd ../frontend-react && npm install",
+    "install-deps-react": "npm install && cd backend && npm install && cd ../frontend-react && npm install",
+    "start": "cd backend && npm start",
+    "lint-react": "cd frontend-react && npm run lint",
+    "preview-react": "cd frontend-react && npm run preview"
   },
   "keywords": [
     "canteen",

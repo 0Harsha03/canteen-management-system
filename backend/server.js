@@ -12,14 +12,16 @@ connectDB();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
+// --- CORS Configuration (The Fix) ---
+// This allows your frontend (e.g., http://localhost:8080) to access the API.
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://your-frontend-domain.vercel.app'] 
-    : ['http://localhost:3000', 'http://localhost:3001'],
-  credentials: true
+    origin: ['http://localhost:8080', 'http://localhost:8081'], // Support both ports
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
 }));
-app.use(express.json());
+
+// --- Middleware ---
+app.use(express.json()); // To parse JSON bodies
 app.use(express.urlencoded({ extended: true }));
 
 // MongoDB connection (will be configured later)

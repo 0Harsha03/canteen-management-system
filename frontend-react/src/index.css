@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Warm, appetizing color palette for canteen system */
+    --background: 32 100% 98%;
+    --foreground: 20 14% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 20 14% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 20 14% 15%;
+
+    /* Primary: Warm orange for food/energy */
+    --primary: 30 95% 55%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Secondary: Fresh green for sustainability */
+    --secondary: 142 71% 45%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 32 40% 96%;
+    --muted-foreground: 20 8% 45%;
+
+    /* Accent: Deep blue for trust */
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 32 30% 88%;
+    --input: 32 30% 88%;
+    --ring: 30 95% 55%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 32 50% 97%;
+    --sidebar-foreground: 20 14% 20%;
+    --sidebar-primary: 30 95% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 32 40% 94%;
+    --sidebar-accent-foreground: 20 14% 20%;
+    --sidebar-border: 32 30% 88%;
+    --sidebar-ring: 30 95% 55%;
+  }
+
+  .dark {
+    --background: 20 20% 10%;
+    --foreground: 32 40% 95%;
+
+    --card: 20 18% 12%;
+    --card-foreground: 32 40% 95%;
+
+    --popover: 20 18% 12%;
+    --popover-foreground: 32 40% 95%;
+
+    --primary: 30 95% 55%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 142 71% 45%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 20 18% 18%;
+    --muted-foreground: 32 20% 65%;
+
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 20 18% 18%;
+    --input: 20 18% 18%;
+    --ring: 30 95% 55%;
+
+    --sidebar-background: 20 18% 12%;
+    --sidebar-foreground: 32 40% 90%;
+    --sidebar-primary: 30 95% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 20 18% 16%;
+    --sidebar-accent-foreground: 32 40% 90%;
+    --sidebar-border: 20 18% 18%;
+    --sidebar-ring: 30 95% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
