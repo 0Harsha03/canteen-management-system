@@ -17,6 +17,6 @@
     }
   ],
   "env": {
-    "VITE_API_URL": "https://your-backend-api-url.vercel.app/api"
+    "VITE_API_URL": "https://canteen-management-system-lch75azwp-harshas-projects-649553be.vercel.app/api"
   }
 }
