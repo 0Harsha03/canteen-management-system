@@ -1,6 +1,6 @@
 // API service configuration for connecting with backend
-// Using relative path so Vite proxy can handle the routing
-const API_BASE_URL = '/api';
+// Use environment variable for production, fallback to relative path for development
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Helper function to get auth headers
 const getAuthHeaders = () => {
