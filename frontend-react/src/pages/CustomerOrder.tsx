@@ -1,14 +1,11 @@
-import { useState, useEffect } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import { menuAPI, ordersAPI } from "@/services/api";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useToast } from "@/hooks/use-toast";
-import { ShoppingCart, Minus, Plus, Clock, Leaf, AlertCircle, Loader2, UtensilsCrossed } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useAuth } from '@/contexts/AuthContext'; // Assuming you have this context
+import { Card, CardHeader, CardContent, CardTitle, CardDescription } from '@/components/ui/card'; // Shadcn components
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Loader2 } from 'lucide-react'; // Icon for loading state
+import { Separator } from '@/components/ui/separator';
 
 interface MenuItem {
   _id: string;
