@@ -1,72 +1,69 @@
+require('dotenv').config();
 const express = require('express');
+const helmet = require('helmet');
 const cors = require('cors');
-const dotenv = require('dotenv');
-const connectDB = require('./config/database');
+const rateLimit = require('express-rate-limit');
+const morgan = require('morgan');
+const mongoose = require('mongoose');
+require('express-async-errors'); // simplifies async error handling
+const apiRouter = require('./routes'); // your routes index
+const { errorHandler } = require('./middleware/errorHandler');
 
-// Load environment variables
-dotenv.config();
-
-// Connect to database
-connectDB();
+const PORT = process.env.PORT || 5000;
+const MONGO_URI = process.env.MONGO_URI;
+const NODE_ENV = process.env.NODE_ENV || 'development';
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
-// --- CORS Configuration (The Fix) ---
-// This allows your frontend (e.g., http://localhost:8080) to access the API.
-app.use(cors({
-    origin: ['http://localhost:8080', 'http://localhost:8081'], // Support both ports
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-}));
-
-// --- Middleware ---
-app.use(express.json()); // To parse JSON bodies
+// Middlewares
+app.use(helmet());
+app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// MongoDB connection (will be configured later)
-// mongoose.connect(process.env.MONGODB_URI, {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// });
+if (NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 
-// Basic route for testing
-app.get('/', (req, res) => {
-  res.json({ 
-    message: 'Canteen Pre-Order and Management System API',
-    version: '1.0.0',
-    status: 'Server is running successfully!'
-  });
+// CORS - lock down the allowed origins in production
+const allowedOrigins = (process.env.CORS_ORIGINS || '').split(',').map(s=>s.trim()).filter(Boolean);
+app.use(cors({
+  origin: allowedOrigins.length ? allowedOrigins : true,
+  credentials: true,
+}));
+
+// Rate limiter (very important for auth endpoints)
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 200,
+  message: { error: 'Too many requests, try later.' }
 });
+app.use(limiter);
 
-// API routes
-app.use('/api/auth', require('./routes/auth'));
-// app.use('/api/users', require('./routes/users'));
-app.use('/api/menu', require('./routes/menu'));
-app.use('/api/orders', require('./routes/orders'));
+// Mount API
+app.use('/api', apiRouter);
 
-// 404 handler - must come BEFORE error handling middleware
-app.use((req, res, next) => {
-  const error = new Error(`Cannot find ${req.originalUrl} on this server!`);
-  error.status = 404;
-  next(error);
+// Health check
+app.get('/health', (req, res) => res.json({ status: 'ok' }));
+
+// Centralized error handler (must be after routes)
+app.use(errorHandler);
+
+// DB connect with retry
+async function connectWithRetry(retries = 5, delayMs = 3000) {
+  try {
+    await mongoose.connect(MONGO_URI);
+    console.log('MongoDB connected');
+  } catch (err) {
+    console.error(`MongoDB connection error. Retries left: ${retries}`, err.message || err);
+    if (retries === 0) throw err;
+    await new Promise(r => setTimeout(r, delayMs));
+    return connectWithRetry(retries - 1, delayMs);
+  }
+}
+
+connectWithRetry().then(() => {
+  app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
+}).catch(err => {
+  console.error('Could not connect to DB, server not started', err);
+  process.exit(1);
 });
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(err.status || 500).json({ 
-    success: false,
-    message: err.message || 'Something went wrong!',
-    error: process.env.NODE_ENV === 'development' ? err.stack : {}
-  });
-});
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
-  console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🌐 API URL: http://localhost:${PORT}`);
-});
-
-module.exports = app;
